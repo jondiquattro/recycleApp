@@ -15,11 +15,13 @@ require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
 const app = express();
+const vision = require('@google-cloud/vision');
+
 
 app.listen(PORT, () => console.log(`App is up on port ${PORT}`));
 
 
-const vision = require('@google-cloud/vision');
+
 
 
 
