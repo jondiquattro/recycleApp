@@ -48,7 +48,7 @@ app.use(methodoverride((req, res)=>{
   }
 }));
 
-//sets the path for vision when the server hears the /vision it will call the 
+//sets the path for vision when the server hears the /vision it will call the
 // Vision function
 app.post('/vision', getGoogleVision);
 
@@ -69,7 +69,7 @@ app.post('/item-categories', getCategory);
 //query earth911 to get recycle instructions
 app.post('/disposal-instructions', getInstructions);
 
-//listen for user to select sub-category, then call 
+//listen for user to select sub-category, then call
 app.post('/choose-sub-cat', subCategory);
 
 function subCategory(req, res){
@@ -102,7 +102,7 @@ function getInstructions(req, res){
   let _getSQL = `
     SELECT * FROM recyclables
     WHERE item_name = '${req.body.item}'`;
-  
+
   // console.log('this is our req.body from subcat', req.body);
   // console.log('this is our categoryStorage at idx 0: ', categoryStorage[0]);
 
@@ -128,7 +128,7 @@ function getInstructions(req, res){
 
       // empty the category storage array
       categoryStorage.pop();
-    
+
       res.render('./pages/result.ejs', {destination: resultsArr});
     }).catch(console.error('error'));
 
@@ -287,12 +287,14 @@ function queryWithVisionResults(visionArr, fileName, res) {
   let _exactMatchSQL = `SELECT * FROM recyclables WHERE LOWER(item_name) IN (${concatStrWithS})`;
   client.query(_exactMatchSQL)
     .then( result => {
-        if (result.rows[0]){
-          console.log('inside if statement... legooo');
-          console.log('file name data: ', fileName)
-          console.log('result.rows data inside if statement ', result.rows[0])
-          res.render('./pages/varification.ejs', {file: fileName, verifiedItem: result.rows[0]} );
-        } 
-      }).catch(err => {
-        console.log(err)});
+      if (result.rows[0]){
+        console.log('inside if statement... legooo');
+        console.log('file name data: ', fileName)
+        console.log('result.rows data inside if statement ', result.rows[0])
+        res.render('./pages/varification.ejs', {file: fileName, verifiedItem: result.rows[0]} );
+      }
+    }).catch(err => {
+      console.log(err)});
 }
+
+// Please keep me in storage;
