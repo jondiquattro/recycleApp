@@ -48,25 +48,23 @@ app.use(methodoverride((req, res)=>{
   }
 }));
 
+app.get('/', indexPage);//called from single'/'
 
-app.post('/search-item', getSearchItem);
 
-//sets the path for vision when the server hears the /vision it will call the getGoogleVision function
 
-// Vision function
+//////////////////////////from index//////////////////////
 
-app.post('/vision', getGoogleVision);
 
-//middleware connections to front end
-app.get('/', helloWorld);
+app.post('/search-item', getSearchItem);//called from index
+app.post('/location', getLocation); //called from index.ejs
 
-//path for imaage upload
-app.post('/upload', uploadPage);
 
-// app.post('/imageCheck', verifyItem)
 
-// Get user location then render the material category page
-app.post('/location', getLocation);
+///////////////////////api paths////////////////////
+
+app.post('/upload', uploadPage);//called from index
+app.post('/vision', getGoogleVision);//called from uploads
+
 
 //Get item material then render subcategory page
 app.post('/item-categories', getCategory);
@@ -187,7 +185,7 @@ function getLocation(req, res){
 
 
 // This retrieves and returns data from the Google Books API.
-function helloWorld(req, res) {
+function indexPage(req, res) {
   res.render('index.ejs');
   checkDatabase();
 }
@@ -249,26 +247,17 @@ const visionClient = new vision.ImageAnnotatorClient({
 
 
 function getGoogleVision(req, res) {
-//receives dom object from vision path
 
-
-  // let imagePath = req.body
-
-  // console.log('this is being called from getGoogleVision function ',req.files.file, req.body)
-  //path for image
   const img_url = './public/data-set/'+req.files.file.name;
-  // console.log(img_url)
-  //gets label info on image
+
   let visionDescriptions = [];
   visionClient.labelDetection(img_url)
     .then(results => {
       results[0].labelAnnotations.forEach(result => {
-        // console.log(result.description);
+
         visionDescriptions.push(result.description);
       });
-      // console.log(visionDescriptions);
-      // make function pass in vision description
-      queryWithVisionResults(visionDescriptions, req.files.file.name, res);
+      queryWithVisionResults(visionDescriptions, req.files.file.name, res);//sends googel data/  file path  / and  results object to the query vision
     }).catch(err => {
       console.log(err)});
 }
@@ -321,6 +310,10 @@ function getSearchItem(req, res){
 //   getInstructions(mySearch, res);
 // }).catch(console.error('error'));
 
+
+
+
+
 // this takes in Google vision array results and queries database
 function queryWithVisionResults(visionArr, fileName, res) {
 
@@ -336,17 +329,19 @@ function queryWithVisionResults(visionArr, fileName, res) {
   }
   concatStr += `'${visionArr[visionArr.length-1]}'`;
 
-  // console.log('this is our concatenatedStr: ', concatStr);
-  // console.log('this is our concatenatedStrWithS: ', concatStrWithS);
   let _exactMatchSQL = `SELECT * FROM recyclables WHERE LOWER(item_name) IN (${concatStrWithS})`;
   client.query(_exactMatchSQL)
     .then( result => {
       if (result.rows[0]){
-        console.log('inside if statement... legooo');
-        console.log('file name data: ', fileName)
-        console.log('result.rows data inside if statement ', result.rows[0])
+        // console.log('inside if statement... legooo');
+        // console.log('file name data: ', fileName)
+        // console.log('result.rows data inside if statement ', result.rows[0])
         res.render('./pages/varification.ejs', {file: fileName, verifiedItem: result.rows[0]} );
       }
     }).catch(err => {
       console.log(err)});
+
+      
 }
+
+
