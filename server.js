@@ -101,8 +101,7 @@ function subCategory(req, res){
 function getInstructions(req, res){
   let _getSQL = `
     SELECT * FROM recyclables
-    WHERE category = '${categoryStorage[0]}'
-    AND item_name = '${req.body.item}'`;
+    WHERE item_name = '${req.body.item}'`;
   
   // console.log('this is our req.body from subcat', req.body);
   // console.log('this is our categoryStorage at idx 0: ', categoryStorage[0]);
@@ -293,7 +292,7 @@ function queryWithVisionResults(visionArr, fileName, res) {
           console.log('file name data: ', fileName)
           console.log('result.rows data inside if statement ', result.rows[0])
           res.render('./pages/varification.ejs', {file: fileName, verifiedItem: result.rows[0]} );
-        }
+        } 
       }).catch(err => {
         console.log(err)});
 }

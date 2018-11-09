@@ -9,9 +9,9 @@
             </header>
             <img src="../data-set/<%=file%>" >
             <p>"../data-set/<%=file%>"</p>
-            <form action="/vision" method="POST">
+            <form action="/getInstructions" method="POST">
                 <img src="">
-                <input type="hidden" name="fake-data" value="hit" >
+                <input type="hidden" name="item" value="<%=verifiedItem.item_name%>" >
                 <input type="submit" name="zip" value="select">
             </form>
        
